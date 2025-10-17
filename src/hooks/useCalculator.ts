@@ -2,9 +2,14 @@
 import Mexp from "math-expression-evaluator";
 import { useState } from "react";
 
+export interface HistoryEntry {
+  expression: string;
+  result: string
+}
+
 export const useCalculator = () => {
     const [expression, setExpression] = useState("0");
-    const [history, setHistory] = useState<string[]>([]);
+    const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   const mexp = new Mexp
 
