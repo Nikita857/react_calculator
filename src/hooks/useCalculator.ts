@@ -1,5 +1,5 @@
 import { create, all } from 'mathjs';
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import useLocalStorage from './useLocalStorage';
 import useKeyboard from './useKeyboard';
 
@@ -13,6 +13,12 @@ const math = create(all);
 export const useCalculator = () => {
     const [expression, setExpression] = useState("0");
     const [history, setHistory] = useLocalStorage<HistoryEntry[]>('calculator-history', []);
+
+    // Создаем ref, чтобы хранить актуальное значение expression
+    const expressionRef = useRef(expression);
+    useEffect(() => {
+        expressionRef.current = expression;
+    }, [expression]);
 
   const handleInput = useCallback((value: string): void => {
     setExpression(prev => {
@@ -36,29 +42,27 @@ export const useCalculator = () => {
     setExpression(prev => prev.length > 1 ? prev.slice(0, -1) : "0");
   }, []);
 
-  const handleClearHistory = () => {
-    setHistory([]);
-  }
-
   const calculate = useCallback((): void => {
-    setExpression((prevExpression) => {
-        try {
-            const sanitizedExpression = prevExpression.replace(/×/g, "*").replace(/÷/g, "/").replace(/,/g, ".");
-            const result = math.evaluate(sanitizedExpression);
-            if (result === undefined || result === null) {
-                throw new Error("Invalid expression");
-            }
+    try {
+      // Теперь мы читаем самое свежее значение из ref, а не из замыкания
+      const currentExpression = expressionRef.current;
+      const sanitizedExpression = currentExpression.replace(/×/g, "*").replace(/÷/g, "/").replace(/,/g, ".");
+      const result = math.evaluate(sanitizedExpression);
 
-            const newHistoryEntry: HistoryEntry = { expression: prevExpression, result: result.toString() };
-            setHistory((prevHistory) => [...prevHistory, newHistoryEntry]);
+      if (result === undefined || result === null) {
+        throw new Error("Invalid expression");
+      }
 
-            return result.toString();
-        } catch (error) {
-            console.error(error)
-            return `Ошибка`;
-        }
-    });
-  }, [setHistory]);
+      const newHistoryEntry: HistoryEntry = { expression: currentExpression, result: result.toString() };
+      
+      // Вызываем сеттеры последовательно, а не внутри друг друга
+      setHistory(prevHistory => [...prevHistory, newHistoryEntry]);
+      setExpression(result.toString());
+
+    } catch (error) {
+      setExpression(`Ошибка`);
+    }
+  }, [setHistory]); // Функция теперь стабильна, т.к. не зависит от expression
 
   const clear = useCallback((): void => {
     setExpression("0");
@@ -82,5 +86,5 @@ export const useCalculator = () => {
 
   useKeyboard(keyMap);
 
-  return {expression, handleInput, handleParentheses, calculate, clear, history, handleBackspace, handleClearHistory}
+  return {expression, handleInput, handleParentheses, calculate, clear, history, handleBackspace}
 }
