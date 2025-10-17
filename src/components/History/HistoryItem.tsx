@@ -12,12 +12,9 @@ const HistoryItem = ({ entry }: HistoryItemProps) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-end", // Выравниваем все по правому краю
-        borderBottom: "1px solid #2c3e50",
+        borderBottom: "1px solid #4f5b62", // Перенесли стиль сюда и немного изменили цвет
         pb: 1, // padding-bottom
         mb: 1, // margin-bottom
-      }}
-      style={{
-        borderBottom: "1px white solid",
       }}
     >
       {/* Выражение (маленьким шрифтом) */}

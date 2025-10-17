@@ -1,20 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from 'react';
 
-type keyMap = {[key: string]: (event: KeyboardEvent) => void};
+type KeyMap = { [key: string]: (event: KeyboardEvent) => void };
 
-const useKeyboard = (keyMap: keyMap) => {
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            const handler = keyMap[event.key];
-            if(handler) {
-                handler(event)
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
+const useKeyboard = (keyMap: KeyMap) => {
+  const keyMapRef = useRef(keyMap);
 
-        return () => {window.addEventListener('keydown', handleKeyDown);};
-    }, [keyMap]);
+  useEffect(() => {
+    keyMapRef.current = keyMap;
+  }, [keyMap]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const handler = keyMapRef.current[event.key];
+      if (handler) {
+        handler(event);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 };
 
 export default useKeyboard;
-

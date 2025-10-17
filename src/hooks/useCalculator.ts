@@ -1,7 +1,7 @@
 import { create, all } from 'mathjs';
-import { useState, useCallback, useMemo } from "react"; // 1. Импортируем useMemo
+import { useState, useCallback, useMemo } from "react";
 import useLocalStorage from './useLocalStorage';
-import useKeyboard from './useKeyboard'; // 2. Импортируем наш новый хук
+import useKeyboard from './useKeyboard';
 
 export interface HistoryEntry {
   expression: string;
@@ -12,8 +12,6 @@ const math = create(all);
 
 export const useCalculator = () => {
     const [expression, setExpression] = useState("0");
-    
-    // 2. Заменяем useState и useEffect одной строкой!
     const [history, setHistory] = useLocalStorage<HistoryEntry[]>('calculator-history', []);
 
   const handleInput = useCallback((value: string): void => {
@@ -38,25 +36,35 @@ export const useCalculator = () => {
     setExpression(prev => prev.length > 1 ? prev.slice(0, -1) : "0");
   }, []);
 
+  const handleClearHistory = () => {
+    setHistory([]);
+  }
+
   const calculate = useCallback((): void => {
-    try {
-      const sanitizedExpression = expression.replace(/×/g, "*").replace(/÷/g, "/").replace(/,/g, ".");
-      const result = math.evaluate(sanitizedExpression);
-      if (result === undefined || result === null) throw new Error("Invalid expression");
-      const newHistoryEntry: HistoryEntry = { expression, result: result.toString() };
-      setHistory([...history, newHistoryEntry]);
-      setExpression(result.toString());
-    } catch (error) {
-      setExpression(`Ошибка`);
-    }
-  }, [expression, history, setHistory]);
+    setExpression((prevExpression) => {
+        try {
+            const sanitizedExpression = prevExpression.replace(/×/g, "*").replace(/÷/g, "/").replace(/,/g, ".");
+            const result = math.evaluate(sanitizedExpression);
+            if (result === undefined || result === null) {
+                throw new Error("Invalid expression");
+            }
+
+            const newHistoryEntry: HistoryEntry = { expression: prevExpression, result: result.toString() };
+            setHistory((prevHistory) => [...prevHistory, newHistoryEntry]);
+
+            return result.toString();
+        } catch (error) {
+            console.error(error)
+            return `Ошибка`;
+        }
+    });
+  }, [setHistory]);
 
   const clear = useCallback((): void => {
     setExpression("0");
     setHistory([]);
   }, [setHistory]);
 
-  // 3. Описываем карту наших клавиш и действий
   const keyMap = useMemo(() => ({
     '0': () => handleInput('0'), '1': () => handleInput('1'), '2': () => handleInput('2'),
     '3': () => handleInput('3'), '4': () => handleInput('4'), '5': () => handleInput('5'),
@@ -72,8 +80,7 @@ export const useCalculator = () => {
     'Escape': (e: KeyboardEvent) => { e.preventDefault(); clear(); },
   }), [handleInput, calculate, handleBackspace, clear]);
 
-  // 4. Вызываем наш хук и передаем ему карту
   useKeyboard(keyMap);
 
-  return {expression, handleInput, handleParentheses, calculate, clear, history, handleBackspace}
+  return {expression, handleInput, handleParentheses, calculate, clear, history, handleBackspace, handleClearHistory}
 }
