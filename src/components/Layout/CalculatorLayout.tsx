@@ -2,10 +2,10 @@ import { Box, Container } from "@mui/material";
 import React from "react";
 
 interface CalculatorLayoutProps {
-    children: React.ReactNode
+  children: React.ReactNode;
 }
 
-const CalculatorLayout = ({children}: CalculatorLayoutProps) => {
+const CalculatorLayout = ({ children }: CalculatorLayoutProps) => {
   return (
     <Container
       maxWidth={false}
@@ -29,7 +29,7 @@ const CalculatorLayout = ({children}: CalculatorLayoutProps) => {
           overflow: "hidden",
         }}
       >
-      {children}
+        {children}
       </Box>
     </Container>
   );

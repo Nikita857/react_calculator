@@ -1,20 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { create, all } from 'mathjs';
+import { create, all } from "mathjs";
 import { useState } from "react";
+import useLocalStorage from "./useLocalStorage";
 
 export interface HistoryEntry {
   expression: string;
-  result: string
+  result: string;
 }
 
-  const math = create(all);
+const math = create(all);
 
 export const useCalculator = () => {
-    const [expression, setExpression] = useState("0");
-    const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [expression, setExpression] = useState("0");
+  const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
+    "calculator-history",
+    []
+  );
 
   const handleInput = (value: string): void => {
-    // Если текущее выражение "0" и вводим не оператор, заменяем "0"
     if (expression === "0" && !"*÷+-%,".includes(value)) {
       setExpression(value);
     } else {
@@ -38,31 +41,29 @@ export const useCalculator = () => {
   };
 
   const handleBackspace = (): void => {
-    if(expression.length > 1) {
+    if (expression.length > 1) {
       setExpression(expression.slice(0, -1));
-    }else{
+    } else {
       setExpression("0");
     }
-  }
+  };
 
   const calculate = (): void => {
     try {
-      
       const sanitizedExpression = expression
         .replace(/×/g, "*")
         .replace(/÷/g, "/")
         .replace(/,/g, ".");
-      
+
       const result = math.evaluate(sanitizedExpression);
 
       const newHistoryEntry: HistoryEntry = {
         expression: expression,
-        result: result.toString()
+        result: result.toString(),
       };
 
-      setHistory([...history, newHistoryEntry])
+      setHistory([...history, newHistoryEntry]);
       setExpression(result.toString());
-      
     } catch (error) {
       setExpression(`Ошибка`);
     }
@@ -70,8 +71,20 @@ export const useCalculator = () => {
 
   const clear = (): void => {
     setExpression("0");
+  };
+
+  const handleClearHistory = (): void => {
     setHistory([]);
   };
 
-  return {expression, handleInput, handleParentheses, calculate, clear, history, handleBackspace}
-}
+  return {
+    expression,
+    handleInput,
+    handleParentheses,
+    calculate,
+    clear,
+    history,
+    handleBackspace,
+    handleClearHistory,
+  };
+};

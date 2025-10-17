@@ -11,6 +11,7 @@ interface CalculatorProps {
   handleInput: (value: string) => void;
   handleBackspace: () => void;
   handleParentheses: () => void;
+  handleClearHistory: () => void;
   calculate: () => void;
   clear: () => void;
   expression: string;
@@ -23,6 +24,7 @@ const Calculator = ({
   handleInput,
   handleParentheses,
   handleBackspace,
+  handleClearHistory,
   calculate,
   clear,
   expression,
@@ -49,7 +51,7 @@ const Calculator = ({
               borderRight: "1px solid #2c3e50",
             }}
           >
-            <History history={history} />
+            <History history={history} clearHistory={handleClearHistory} />
           </Box>
         )}
 

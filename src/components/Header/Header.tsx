@@ -1,15 +1,29 @@
-import { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, FormControlLabel, Switch } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
+import { useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  MenuItem,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 
 interface HeaderProps {
   isHistoryOpen: boolean;
-  calculatorMode: 'normal' | 'scientific';
+  calculatorMode: "normal" | "scientific";
   toggleHistory: () => void;
   toggleMode: () => void;
 }
 
-const Header = ({ isHistoryOpen, calculatorMode, toggleHistory, toggleMode }: HeaderProps) => {
+const Header = ({
+  isHistoryOpen,
+  calculatorMode,
+  toggleHistory,
+  toggleMode,
+}: HeaderProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -49,10 +63,17 @@ const Header = ({ isHistoryOpen, calculatorMode, toggleHistory, toggleMode }: He
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleToggleHistory}>{isHistoryOpen ? 'Скрыть' : 'Показать'} историю</MenuItem>
+        <MenuItem onClick={handleToggleHistory}>
+          {isHistoryOpen ? "Скрыть" : "Показать"} историю
+        </MenuItem>
         <MenuItem>
           <FormControlLabel
-            control={<Switch checked={calculatorMode === 'scientific'} onChange={toggleMode} />}
+            control={
+              <Switch
+                checked={calculatorMode === "scientific"}
+                onChange={toggleMode}
+              />
+            }
             label="Инженерный режим"
           />
         </MenuItem>

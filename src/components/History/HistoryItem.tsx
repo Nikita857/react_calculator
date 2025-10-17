@@ -16,6 +16,9 @@ const HistoryItem = ({ entry }: HistoryItemProps) => {
         pb: 1, // padding-bottom
         mb: 1, // margin-bottom
       }}
+      style={{
+        borderBottom: "1px white solid",
+      }}
     >
       {/* Выражение (маленьким шрифтом) */}
       <Typography
