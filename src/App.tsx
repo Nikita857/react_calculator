@@ -31,28 +31,36 @@ function App() {
         maxWidth={false}
         sx={{
           height: "100vh",
-          width: "50vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "background.default",
+          padding: 2,
         }}
       >
         <Grid
           container
           sx={{
-            height: "65vh",
-            width: "100vw",
-            maxWidth: "1600px",
+            height: "75vh",
+            width: "80vw",
+            maxWidth: "1200px",
             margin: 0,
           }}
         >
-                        {/* History Panel (Left) */}
-   2     <Grid item xs={4} sx={{ p: 1 }}>
-   3       <Paper elevation={3} sx={{ height: '100%', borderRadius: '16px' }}>
-   4         <History history={history} />
-   5       </Paper>
-   6     </Grid>
+          {/* History Panel (Left) */}
+          <Grid item xs={4} sx={{ p: 1 }}>
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                height: '100%', 
+                borderRadius: '16px',
+                backgroundColor: "background.paper",
+              }}
+            >
+              <History history={history} />
+            </Paper>
+          </Grid>
+
           {/* Calculator Panel */}
           <Grid item xs={8} sx={{ p: 1 }}>
             <Paper
@@ -63,15 +71,19 @@ function App() {
                 display: "flex",
                 flexDirection: "column",
                 backgroundColor: "background.paper",
-                p: 2,
+                p: 3,
               }}
             >
-              {/* {DISPLAY} */}
+              {/* DISPLAY */}
               <Display expression={expression}/>
 
-              {/* {KEYBOARD with props from useCalculator hook} */}
-              <Keypad handleInput={handleInput} handleParentheses={handleParentheses} calculate={calculate} clear={clear}/>
-
+              {/* KEYPAD with props from useCalculator hook */}
+              <Keypad 
+                handleInput={handleInput} 
+                handleParentheses={handleParentheses} 
+                calculate={calculate} 
+                clear={clear}
+              />
             </Paper>
           </Grid>
         </Grid>
