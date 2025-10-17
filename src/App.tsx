@@ -1,4 +1,6 @@
-import { Container, Grid, Paper, CssBaseline } from "@mui/material";
+import { Container, Paper, CssBaseline, Stack, Box, AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, FormControlLabel, Switch } from "@mui/material";
+import { useState } from "react";
+import MenuIcon from '@mui/icons-material/Menu';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./App.css";
 import { useCalculator } from "./hooks/useCalculator";
@@ -23,6 +25,27 @@ const darkTheme = createTheme({
 function App() {
   
   const {expression, handleInput, handleParentheses, calculate, clear, history} = useCalculator();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [calculatorMode, setCalculatorMode] = useState<'normal' | 'scientific'>('normal');
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const toggleHistory = () => {
+    setIsHistoryOpen(!isHistoryOpen);
+    handleMenuClose();
+  };
+
+  const toggleMode = () => {
+    setCalculatorMode(calculatorMode === 'normal' ? 'scientific' : 'normal');
+  };
+
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -38,55 +61,69 @@ function App() {
           padding: 2,
         }}
       >
-        <Grid
-          container
-          sx={{
-            height: "75vh",
-            width: "80vw",
-            maxWidth: "1200px",
-            margin: 0,
-          }}
-        >
-          {/* History Panel (Left) */}
-          <Grid item xs={4} sx={{ p: 1 }}>
-            <Paper 
-              elevation={3} 
-              sx={{ 
-                height: '100%', 
-                borderRadius: '16px',
-                backgroundColor: "background.paper",
-              }}
-            >
-              <History history={history} />
-            </Paper>
-          </Grid>
-
-          {/* Calculator Panel */}
-          <Grid item xs={8} sx={{ p: 1 }}>
-            <Paper
-              elevation={3}
-              sx={{
-                height: "100%",
-                borderRadius: "16px",
-                display: "flex",
-                flexDirection: "column",
-                backgroundColor: "background.paper",
-                p: 3,
-              }}
-            >
-              {/* DISPLAY */}
-              <Display expression={expression}/>
-
-              {/* KEYPAD with props from useCalculator hook */}
-              <Keypad 
-                handleInput={handleInput} 
-                handleParentheses={handleParentheses} 
-                calculate={calculate} 
-                clear={clear}
+        <Box sx={{ height: "80vh", width: "50vw", maxWidth: "1000px", display: "flex", flexDirection: "column", borderRadius: "24px", overflow: "hidden" }}>
+          <AppBar position="static" sx={{ bgcolor: "#1a2a41" }}>
+            <Toolbar>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+                onClick={handleMenuOpen}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Калькулятор
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={toggleHistory}>{isHistoryOpen ? 'Скрыть' : 'Показать'} историю</MenuItem>
+            <MenuItem>
+              <FormControlLabel
+                control={<Switch checked={calculatorMode === 'scientific'} onChange={toggleMode} />}
+                label="Инженерный режим"
               />
-            </Paper>
-          </Grid>
-        </Grid>
+            </MenuItem>
+          </Menu>
+          <Paper 
+            elevation={3} 
+            sx={{
+              flex: 1, // Allow paper to grow
+              p: 3,
+              bgcolor: "background.paper",
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <Stack direction="row" sx={{ height: "100%" }}>
+              {/* History Panel (Left) - Conditionally rendered */}
+              {isHistoryOpen && (
+                <Box sx={{ width: "45%", height: "100%", p: 2, borderRight: "1px solid #2c3e50" }}>
+                  <History history={history} />
+                </Box>
+              )}
+
+              {/* Calculator Panel (Right) */}
+              <Box sx={{ flex: 1, p: 2, display: "flex", flexDirection: "column" }}>
+                <Display expression={expression} />
+                <Keypad
+                  mode={calculatorMode} 
+                  handleInput={handleInput} 
+                  handleParentheses={handleParentheses} 
+                  calculate={calculate} 
+                  clear={clear}
+                />
+              </Box>
+            </Stack>
+          </Paper>
+        </Box>
       </Container>
     </ThemeProvider>
   );

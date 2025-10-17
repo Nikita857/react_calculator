@@ -1,8 +1,9 @@
-import { Box, Typography, List, ListItem, ListItemText } from "@mui/material";
+import { Box, Typography, List} from "@mui/material";
+import HistoryItem from "./HistoryItem";
+import type { HistoryEntry } from "../../hooks/useCalculator";
 
-// Определяем props: компонент принимает массив строк
 interface HistoryProps {
-  history: string[];
+  history: HistoryEntry[];
 }
 
 const History = ({ history }: HistoryProps) => {
@@ -22,24 +23,12 @@ const History = ({ history }: HistoryProps) => {
         sx={{
           flexGrow: 1,
           overflow: "auto", // Включаем прокрутку
-          border: "1px solid #2c3e50",
-          borderRadius: "8px",
           p: 1,
         }}
       >
         <List>
           {history.map((entry, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemText
-                primary={entry}
-                primaryTypographyProps={{
-                  style: {
-                    textAlign: "right",
-                    wordBreak: "break-all", // Перенос длинных строк
-                  },
-                }}
-              />
-            </ListItem>
+            <HistoryItem key={index} entry={entry}/> 
           ))}
         </List>
       </Box>

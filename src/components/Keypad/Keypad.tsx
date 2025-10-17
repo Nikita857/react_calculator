@@ -1,100 +1,68 @@
-import { Paper } from "@mui/material"
-import CalculatorButton from "../Button/Button"
+import { Paper, Stack } from "@mui/material";
+import CalculatorButton from "../Button/Button";
+import { buttonConfig} from "../../config/buttons";
+import type { ButtonConfig } from "../../config/buttons";
 
+// Определяем props: это все функции, которые нужны кнопкам
 interface KeypadProps {
-    handleInput: (value: string) => void
-    handleParentheses: () => void
-    calculate: () => void
-    clear: () => void
+  mode: 'normal' | 'scientific';
+  handleInput: (value: string) => void;
+  handleParentheses: () => void;
+  calculate: () => void;
+  clear: () => void;
 }
 
-const Keypad = ({handleInput, handleParentheses, calculate, clear}: KeypadProps) => {
-    return (
-              <Paper
-                elevation={0}
-                sx={{
-                  flex: 1,
-                  borderRadius: "12px",
-                  backgroundColor: "transparent",
-                }}
+const Keypad = ({ mode, handleInput, handleParentheses, calculate, clear }: KeypadProps) => {
+
+  const layout = buttonConfig[mode];
+
+  const handleButtonClick = (button: ButtonConfig) => {
+    switch (button.type) {
+      case 'digit':
+      case 'operator':
+      case 'decimal':
+        handleInput(button.value);
+        break;
+      case 'action':
+        if (button.value === 'AC') clear();
+        break;
+      case 'parentheses':
+        handleParentheses();
+        break;
+      case 'equals':
+        calculate();
+        break;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <Paper
+      elevation={0}
+      sx={{
+        flex: 1,
+        borderRadius: "12px",
+        backgroundColor: "transparent",
+      }}
+    >
+      <Stack spacing={1}>
+        {layout.map((row, rowIndex) => (
+          <Stack key={rowIndex} direction="row" spacing={1}>
+            {row.map((button) => (
+              <CalculatorButton
+                key={button.label}
+                {...button.props}
+                onClick={() => handleButtonClick(button)}
               >
-                {/* First Row */}
-                <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                  <CalculatorButton clear onClick={clear}>
-                    AC
-</CalculatorButton>     
-                  <CalculatorButton operation onClick={handleParentheses}>
-                    ()
-                  </CalculatorButton>
-                  <CalculatorButton operation onClick={() => handleInput("%")}>
-                    %
-                  </CalculatorButton>
-                  <CalculatorButton operation onClick={() => handleInput("÷")}>
-                    ÷
-                  </CalculatorButton>
-                </div>
+                {button.label}
+              </CalculatorButton>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    </Paper>
+  );
+};
 
-                {/* Second Row */}
-                <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                  <CalculatorButton onClick={() => handleInput("7")}>
-                    7
-                  </CalculatorButton>
-                  <CalculatorButton onClick={() => handleInput("8")}>
-                    8
-                  </CalculatorButton>
-                  <CalculatorButton onClick={() => handleInput("9")}>
-                    9
-                  </CalculatorButton>
-                  <CalculatorButton operation onClick={() => handleInput("*")}>
-                    ×
-                  </CalculatorButton>
-                </div>
-
-                {/* Third Row */}
-                <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                  <CalculatorButton onClick={() => handleInput("4")}>
-                    4
-                  </CalculatorButton>
-                  <CalculatorButton onClick={() => handleInput("5")}>
-                    5
-                  </CalculatorButton>
-                  <CalculatorButton onClick={() => handleInput("6")}>
-                    6
-                  </CalculatorButton>
-                  <CalculatorButton operation onClick={() => handleInput("-")}>
-                    -
-                  </CalculatorButton>
-                </div>
-
-                {/* Fourth Row */}
-                <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                  <CalculatorButton onClick={() => handleInput("1")}>
-                    1
-                  </CalculatorButton>
-                  <CalculatorButton onClick={() => handleInput("2")}>
-                    2
-                  </CalculatorButton>
-                  <CalculatorButton onClick={() => handleInput("3")}>
-                    3
-                  </CalculatorButton>
-                  <CalculatorButton operation onClick={() => handleInput("+")}>
-                    +
-                  </CalculatorButton>
-                </div>
-
-                {/* Fifth Row */}
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <CalculatorButton zero onClick={() => handleInput("0")}>
-                    0
-                  </CalculatorButton>
-                  <CalculatorButton onClick={() => handleInput(",")}>
-                    ,
-                  </CalculatorButton>
-                  <CalculatorButton equals onClick={calculate}>
-                    =
-                  </CalculatorButton>
-                </div>
-              </Paper>
-    )
-}
 export default Keypad;
