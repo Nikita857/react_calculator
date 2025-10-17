@@ -38,7 +38,7 @@ const Calculator = ({
         bgcolor: "background.paper",
         display: "flex",
         flexDirection: "column",
-        overflow: 'hidden', // <--- ДОБАВЛЕНО ЭТО СВОЙСТВО
+        overflow: "hidden", // <--- ДОБАВЛЕНО ЭТО СВОЙСТВО
       }}
     >
       <Stack direction="row" sx={{ height: "100%" }}>
