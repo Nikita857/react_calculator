@@ -3,7 +3,6 @@ import CalculatorButton from "../Button/Button";
 import { buttonConfig} from "../../config/buttons";
 import type { ButtonConfig } from "../../config/buttons";
 
-// Определяем props: это все функции, которые нужны кнопкам
 interface KeypadProps {
   mode: 'normal' | 'scientific';
   handleInput: (value: string) => void;
