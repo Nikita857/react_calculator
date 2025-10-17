@@ -4,6 +4,7 @@ import "./App.css";
 import { useCalculator } from "./hooks/useCalculator";
 import Display from "./components/Display/Display";
 import Keypad from "./components/Keypad/Keypad";
+import History from "./components/History/History";
 
 // Create a dark theme based on the image
 const darkTheme = createTheme({
@@ -21,7 +22,7 @@ const darkTheme = createTheme({
 
 function App() {
   
-  const {expression, handleInput, handleParentheses, calculate, clear} = useCalculator();
+  const {expression, handleInput, handleParentheses, calculate, clear, history} = useCalculator();
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -46,6 +47,12 @@ function App() {
             margin: 0,
           }}
         >
+                        {/* History Panel (Left) */}
+   2     <Grid item xs={4} sx={{ p: 1 }}>
+   3       <Paper elevation={3} sx={{ height: '100%', borderRadius: '16px' }}>
+   4         <History history={history} />
+   5       </Paper>
+   6     </Grid>
           {/* Calculator Panel */}
           <Grid item xs={8} sx={{ p: 1 }}>
             <Paper

@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export const useCalculator = () => {
     const [expression, setExpression] = useState("0");
+    const [history, setHistory] = useState<string[]>([]);
 
   const mexp = new Mexp
 
@@ -38,19 +39,22 @@ export const useCalculator = () => {
         .replace(/×/g, "*")
         .replace(/÷/g, "/")
         .replace(/,/g, ".");
-      console.log(sanitizedExpression);
       
-      // Исправление: используем Mexp напрямую, без создания экземпляра
       const result = mexp.eval(sanitizedExpression);
+
+      const newHistoryEntry = `${expression}=${result}`;
+      setHistory([...history, newHistoryEntry])
+
       setExpression(result.toString());
     } catch (error) {
-      setExpression(`Ошибка: ${error}`);
+      setExpression(`Ошибка`);
     }
   };
 
   const clear = (): void => {
     setExpression("0");
+    setHistory([]);
   };
 
-  return {expression, handleInput, handleParentheses, calculate, clear}
+  return {expression, handleInput, handleParentheses, calculate, clear, history}
 }
