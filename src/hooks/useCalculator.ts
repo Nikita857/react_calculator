@@ -47,10 +47,14 @@ export const useCalculator = () => {
       
       const result = mexp.eval(sanitizedExpression);
 
-      const newHistoryEntry = `${expression}=${result}`;
-      setHistory([...history, newHistoryEntry])
+      const newHistoryEntry: HistoryEntry = {
+        expression: expression,
+        result: result.toString()
+      };
 
+      setHistory([...history, newHistoryEntry])
       setExpression(result.toString());
+      
     } catch (error) {
       setExpression(`Ошибка`);
     }
