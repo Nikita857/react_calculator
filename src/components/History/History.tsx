@@ -25,6 +25,7 @@ const History = ({ history, clearHistory }: HistoryProps) => {
         sx={{
           flexGrow: 1,
           overflowY: "auto", // Включаем прокрутку
+          minHeight: 0, // Исправление для скролла в flex-контейнере
           p: 1,
         }}
       >
