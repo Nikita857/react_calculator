@@ -1,13 +1,11 @@
-import { Paper, CssBaseline, Stack, Box } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import { useState } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./App.css";
 import { useCalculator } from "./hooks/useCalculator";
-import Display from "./components/Display/Display";
-import Keypad from "./components/Keypad/Keypad";
-import History from "./components/History/History";
 import Header from "./components/Header/Header"; // Импортируем новый компонент
 import CalculatorLayout from "./components/Layout/CalculatorLayout";
+import Calculator from "./components/Calculator/Calculator";
 
 // Create a dark theme based on the image
 const darkTheme = createTheme({
@@ -24,14 +22,8 @@ const darkTheme = createTheme({
 });
 
 function App() {
-  const {
-    expression,
-    handleInput,
-    handleParentheses,
-    calculate,
-    clear,
-    history,
-  } = useCalculator();
+  const calculator = useCalculator();
+
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [calculatorMode, setCalculatorMode] = useState<"normal" | "scientific">(
     "normal"
@@ -55,46 +47,12 @@ function App() {
           toggleHistory={toggleHistory}
           toggleMode={toggleMode}
         />
-        <Paper
-          elevation={3}
-          sx={{
-            flex: 1, // Allow paper to grow
-            p: 3,
-            bgcolor: "background.paper",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Stack direction="row" sx={{ height: "100%" }}>
-            {/* History Panel (Left) - Conditionally rendered */}
-            {isHistoryOpen && (
-              <Box
-                sx={{
-                  width: "45%",
-                  height: "100%",
-                  p: 2,
-                  borderRight: "1px solid #2c3e50",
-                }}
-              >
-                <History history={history} />
-              </Box>
-            )}
-
-            {/* Calculator Panel (Right) */}
-            <Box
-              sx={{ flex: 1, p: 2, display: "flex", flexDirection: "column" }}
-            >
-              <Display expression={expression} />
-              <Keypad
-                mode={calculatorMode}
-                handleInput={handleInput}
-                handleParentheses={handleParentheses}
-                calculate={calculate}
-                clear={clear}
-              />
-            </Box>
-          </Stack>
-        </Paper>
+        <Calculator
+          isHistoryOpen={isHistoryOpen}
+          calculatorMode={calculatorMode}
+          {...calculator} //Оптимизируем передачу пропсов с помощью spread
+          //  (Все функции которые лежат в хуке автоматически передаются в компонент)
+        />
       </CalculatorLayout>
     </ThemeProvider>
   );
