@@ -9,6 +9,7 @@ interface CalculatorProps {
   history: HistoryEntry[];
   calculatorMode: "normal" | "scientific";
   handleInput: (value: string) => void;
+  handleBackspace: () => void;
   handleParentheses: () => void;
   calculate: () => void;
   clear: () => void;
@@ -21,6 +22,7 @@ const Calculator = ({
   calculatorMode,
   handleInput,
   handleParentheses,
+  handleBackspace,
   calculate,
   clear,
   expression,
@@ -58,6 +60,7 @@ const Calculator = ({
             mode={calculatorMode}
             handleInput={handleInput}
             handleParentheses={handleParentheses}
+            handleBackspace={handleBackspace}
             calculate={calculate}
             clear={clear}
           />

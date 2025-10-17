@@ -7,15 +7,17 @@ interface CalculatorButtonProps extends Omit<ButtonProps, 'variant'> {
   equals?: boolean;
   zero?: boolean;
   clear?: boolean;
+  icon?: React.ReactNode;
   children: React.ReactNode;
 }
 
 // Стилизованная кнопка
 const StyledCalculatorButton = styled(Button, {
-  shouldForwardProp: (prop) => !['operation', 'equals', 'zero', 'clear'].includes(prop as string),
+  // Добавили 'icon' в список, чтобы не передавать этот проп в DOM
+  shouldForwardProp: (prop) => !['operation', 'equals', 'zero', 'clear', 'icon'].includes(prop as string),
 })<CalculatorButtonProps>(({operation, equals, zero, clear }) => ({
-  minWidth: equals ? '120px' : '60px',
-  height: '60px',
+  width: '100%',
+  height: '100%',
   borderRadius: '50%',
   fontSize: '1.5rem',
   fontWeight: operation || equals ? 500 : 400,
@@ -45,10 +47,8 @@ const StyledCalculatorButton = styled(Button, {
   
   // Специальные стили для кнопки 0 (шире)
   ...(equals && {
-    borderRadius: '30px',
-    justifyContent: 'flex-start',
-    paddingLeft: '50px',
-    marginLeft: '18px'
+    flexGrow: 2, // Make the equals button take up more space
+    borderRadius: '34px', // Adjust border radius for a pill shape
   }),
 }));
 
@@ -59,6 +59,7 @@ const CalculatorButton: React.FC<CalculatorButtonProps> = ({
   equals = false, 
   zero = false, 
   clear = false,
+  icon,
   ...props 
 }) => {
   return (
@@ -69,7 +70,7 @@ const CalculatorButton: React.FC<CalculatorButtonProps> = ({
       clear={clear}
       {...props}
     >
-      {children}
+      {icon || children}
     </StyledCalculatorButton>
   );
 };

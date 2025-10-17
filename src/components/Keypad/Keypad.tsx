@@ -7,11 +7,12 @@ interface KeypadProps {
   mode: 'normal' | 'scientific';
   handleInput: (value: string) => void;
   handleParentheses: () => void;
+  handleBackspace: () => void;
   calculate: () => void;
   clear: () => void;
 }
 
-const Keypad = ({ mode, handleInput, handleParentheses, calculate, clear }: KeypadProps) => {
+const Keypad = ({ mode, handleInput, handleParentheses, calculate, clear, handleBackspace }: KeypadProps) => {
 
   const layout = buttonConfig[mode];
 
@@ -31,6 +32,9 @@ const Keypad = ({ mode, handleInput, handleParentheses, calculate, clear }: Keyp
       case 'equals':
         calculate();
         break;
+      case 'backspace':
+        handleBackspace();
+        break;
       default:
         break;
     }
@@ -43,16 +47,19 @@ const Keypad = ({ mode, handleInput, handleParentheses, calculate, clear }: Keyp
         flex: 1,
         borderRadius: "12px",
         backgroundColor: "transparent",
+        display: 'flex',
+        flexDirection: 'column'
       }}
     >
-      <Stack spacing={1}>
+      <Stack spacing={1} sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {layout.map((row, rowIndex) => (
-          <Stack key={rowIndex} direction="row" spacing={1}>
+          <Stack key={rowIndex} direction="row" spacing={1} sx={{ flex: 1 }}>
             {row.map((button) => (
               <CalculatorButton
                 key={button.label}
                 {...button.props}
                 onClick={() => handleButtonClick(button)}
+                sx={{ flex: 1, width: '100%' }}
               >
                 {button.label}
               </CalculatorButton>

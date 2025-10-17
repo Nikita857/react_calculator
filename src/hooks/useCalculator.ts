@@ -37,6 +37,14 @@ export const useCalculator = () => {
     }
   };
 
+  const handleBackspace = (): void => {
+    if(expression.length > 1) {
+      setExpression(expression.slice(0, -1));
+    }else{
+      setExpression("0");
+    }
+  }
+
   const calculate = (): void => {
     try {
       
@@ -65,5 +73,5 @@ export const useCalculator = () => {
     setHistory([]);
   };
 
-  return {expression, handleInput, handleParentheses, calculate, clear, history}
+  return {expression, handleInput, handleParentheses, calculate, clear, history, handleBackspace}
 }
