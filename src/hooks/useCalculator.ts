@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import Mexp from "math-expression-evaluator";
+import { create, all } from 'mathjs';
 import { useState } from "react";
 
 export interface HistoryEntry {
@@ -7,11 +7,11 @@ export interface HistoryEntry {
   result: string
 }
 
+  const math = create(all);
+
 export const useCalculator = () => {
     const [expression, setExpression] = useState("0");
     const [history, setHistory] = useState<HistoryEntry[]>([]);
-
-  const mexp = new Mexp
 
   const handleInput = (value: string): void => {
     // Если текущее выражение "0" и вводим не оператор, заменяем "0"
@@ -53,7 +53,7 @@ export const useCalculator = () => {
         .replace(/÷/g, "/")
         .replace(/,/g, ".");
       
-      const result = mexp.eval(sanitizedExpression);
+      const result = math.evaluate(sanitizedExpression);
 
       const newHistoryEntry: HistoryEntry = {
         expression: expression,
